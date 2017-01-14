@@ -247,19 +247,18 @@ div.tocify {
 <p>Stata has a graphical user interface (GUI) that gives you access to a wide range of its data management and analysis commands. Using Stata’s menus is a good method for learning the different techniques that are at your disposal. Additionally, because Stata will print the syntax equivalent to the command you selected, point-and-click can be a useful method for understanding how to properly use a command you are unfamiliar with.</p>
 <p>However, conducting an analysis strictly through the point-and-click interface has several disadvantages.</p>
 <ol style="list-style-type: decimal">
-<li>Pointing-and-clicking can be very cumbersome</li>
+<li>It gets annoying and cumbersome</li>
 <li>You don’t have a detailed script that allows you (or others) to replicate your analysis.</li>
 </ol>
 <p>Other methods of using Stata address these issues.</p>
 </div>
 <div id="console" class="section level2">
 <h2>Console</h2>
-<p>You also have the option of typing Stata commands directly into the console (the box below the “Results” pane). If you already have a good grasp of the commands you need, using the console will likely be far more efficient than the point-and-click method. That said, this method still doesn’t allow us to save the exact sequence of commands we used to conduct our analysis</p>
+<p>You can typing Stata commands directly into the console (the box below the “Results” pane). If you already have a good grasp of the commands you need, using the console will likely be far more efficient than the point-and-click method. However, this method still doesn’t allow us to save the exact sequence of commands we used to conduct our analysis</p>
 </div>
 <div id="do-files" class="section level2">
 <h2>.do files</h2>
-<p>Scripts of Stata commands are given a .do extension. This is the preferred method of using Stata as it allows you to use Stata syntax, execute multiple commands sequentially, and have a document which saves the steps of your analysis.</p>
-<p>You can open a .do file by clicking on the icon of the pencil and notepad over the “Results” pane. You can execute specific chunks of your .do file by highlighting the lines of interest and clicking the “Execute” button in the .do file pane. If you want to execute the entire .do file, click “Execute” when nothing is highlighted. You can also write comments to yourself in the .do file:</p>
+<p>The preferred method for conducting analysis in Stata is by developing a script of your commands that you can modify and save. Stata scripts are given a .do extension. You can open a .do file by clicking on the icon of the pencil and notepad over the “Results” pane. In the .do file editor, you can execute specific chunks of your .do file by highlighting the lines of interest and clicking the “Execute” button. If you want to execute the entire .do file, click “Execute” when nothing is highlighted. You can also write comments to yourself in the .do file:</p>
 <pre><code>
 * This is a comment. Stata will not try to run this line
 
@@ -271,12 +270,12 @@ Everything within the slash asterisks will be commented out.
 </code></pre>
 </div>
 </div>
-<div id="basic-stata-commands" class="section level1">
-<h1>Basic Stata Commands</h1>
+<div id="managing-data-in-stata" class="section level1">
+<h1>Managing Data in Stata</h1>
 <p>This section will guide you through basic commands for loading, manipulating, and anlayzing data in Stata. To access the documentation for any Stata command use the <code>help</code> command:</p>
 <pre><code>help summarize</code></pre>
-<div id="loading-data-into-stata" class="section level2">
-<h2>Loading data into Stata</h2>
+<div id="loading-data" class="section level2">
+<h2>Loading Data</h2>
 <p>One of the most common problems for new Stata users is simply loading your data set into the program. Stata uses different commands to load different types of data.</p>
 <pre><code>* Open Stata datasets (.dta) with use
 use caschool.dta, clear
@@ -287,22 +286,23 @@ insheet caschool.txt, clear
 
 * Open Excel files (.xls, .xlsx) with import excel
 import excel using caschool.xlsx, sheet(&quot;Sheet1&quot;)</code></pre>
+<p>Our example data set is already in Stata (.dta) format. Therefore, we will only be using the <code>use</code> command throughout.</p>
 <p>Let’s imagine I placed the <code>caschool.dta</code> data set into a folder on my Desktop called ‘reg’. The full file path to this file is:</p>
 <pre><code>/home/sy/Desktop/reg/caschool.dta</code></pre>
 <p>or equivalently</p>
 <pre><code>~/Desktop/reg/caschool.dta</code></pre>
-<p>Typically, when we want to find a file on our computers, we can simply click and scroll through folders until we find what we want. We need to be more explicit with Stata about where to look. By default, Stata will look for files first in its working directory. To check what is the active working directory in your Stata session, use the <code>cd</code> command:</p>
+<p>By default, Stata will look for files first in the current working directory. To check which directory this is in your current Stata session, use the <code>cd</code> command:</p>
 <pre><code>. cd
 /home/sy
 </code></pre>
-<p>A way to think of the working directory is that it is the “folder” that Stata has open at that time. If the file you want to load is not in this working directory, Stata will not be able to find it by name.</p>
+<p>A way to think of the working directory is that it is the folder that Stata “has open” at that time. If the file you want to load is not in this working directory, Stata will not be able to find it by name.</p>
 <pre><code>. use caschool.dta, clear
 file caschool.dta not found
 r(601);</code></pre>
 <p>Because <code>caschool.dta</code> is not in the current working directory, <code>~</code>, but rather, <code>~/Desktop/reg</code>, Stata was not able to find it.</p>
 <div id="absolute-paths" class="section level3">
 <h3>Absolute Paths</h3>
-<p>One method for getting around this is by calling for the file by it’s full (or absolute) path name:</p>
+<p>One method for getting around this is by calling for the file by its full (or absolute) path name:</p>
 <pre><code>. use ~/Desktop/reg/caschool.dta, clear
 
 . 
@@ -318,11 +318,56 @@ r(601);</code></pre>
 . use caschool.dta, clear
 
 . </code></pre>
-<p>By changing the working directory in to the <code>reg</code> folder, we can call <code>caschool.dta</code> by name. Another user would simply have to change the directory after the <code>cd</code> command to the folder where she placed <code>caschool.dta</code>.</p>
+<p>By changing the working directory in to the <code>reg</code> folder, we can call <code>caschool.dta</code> by name. Someone else using your file would simply have to change the directory after the <code>cd</code> command to the folder where she placed <code>caschool.dta</code> in order to run your analysis.</p>
+<p><strong>NOTE</strong></p>
+<p>If your file name or any part of your file path contains spaces, you need to wrap the entire file path in double quotes. Whenever possible, please avoid including spaces in your file and director names. Because my full file path in the above example does not contain any spaces (<code>~/Desktop/reg/caschool.dta</code>), I do not need to use double quotes. However, if I was opening a data set called “california schools.dta” stored in a folder called “Regression I”, I would need to use this command to open my data set:</p>
+<pre><code>use &quot;~/Desktop/Regression I/california schools.dta&quot;, clear</code></pre>
 </div>
+</div>
+<div id="examining-your-data" class="section level2">
+<h2>Examining your data</h2>
+<p>You may be curious about what is inside the data set you’ve just loaded. A good first step is the <code>describe</code> command.</p>
+<pre><code>. describe
+
+Contains data from caschool.dta
+  obs:           420                          
+ vars:            18                          29 Mar 2002 07:13
+ size:        58,380                          
+----------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------
+observation_n~r float   %9.0g                 
+dist_cod        float   %9.0g                 
+county          str18   %18s                  
+district        str53   %53s                  
+gr_span         str8    %8s                   
+enrl_tot        float   %9.0g                 
+teachers        float   %9.0g                 
+calw_pct        float   %9.0g                 
+meal_pct        float   %9.0g                 
+computer        float   %9.0g                 
+testscr         float   %9.0g                 
+comp_stu        float   %9.0g                 
+expn_stu        float   %9.0g                 
+str             float   %9.0g                 
+avginc          float   %9.0g                 
+el_pct          float   %9.0g                 
+read_scr        float   %9.0g                 
+math_scr        float   %9.0g                 
+------------------------------------------------
+Sorted by:  </code></pre>
+<p>If you wish to view your data in spreadsheet form, you can enter the command <code>browse</code> into your console or click on the “Browse” icon above the “Results” pane.</p>
+</div>
+<div id="variable-types" class="section level2">
+<h2>Variable Types</h2>
+<p>There are two basic types of variables in Stata: numeric and string (or text) variables. There are actually many types of numeric variables (e.g., floats, doubles, longs) though this distinction will likely be unimportant for the purposes of this class.</p>
+<p>If you <code>browse</code> the data set, you will see that the values of numeric variables are colored black and the values of string variables are colored red. Whenever you are working with values of a string variable, you must wrap double quotes around that value.</p>
+<pre><code>browse if meal_pct &lt; 50
+browse if county == &quot;Sacramento&quot;</code></pre>
 </div>
 <div id="making-and-modifying-variables" class="section level2">
-<h2>Making and modifying variables</h2>
+<h2>Making and Modifying Variables</h2>
 <p>To make new variables, we can use the <code>generate</code> command:</p>
 <pre><code>generate newvar1 = 1
 gen newvar2 = 2
@@ -334,17 +379,20 @@ replace newvar10 = 10</code></pre>
 <pre><code>drop newvar1
 drop newvar*</code></pre>
 <p>For many commands, Stata will accept wildcards, indicated by <code>*</code>. In the above example, <code>drop newvar*</code> tells Stata to drop all variables that begin with the stem “newvar” (i.e., <code>newvar2</code>, <code>newvar3</code>)</p>
-<div id="binary-variables" class="section level3">
-<h3>Binary Variables</h3>
-<p>More often than not, we need to create variables based on the values of other in our data set. For example, I am interested in making an indicator variable that has a value of 1 if a school’s value of <code>meal_pct</code> is below 25.</p>
+<p>We can generate variables that are modifications of existing variables. For instance, if we wanted to create a variable that transformed the <code>meal_pct</code> variable into a proportion, we would use the following command:</p>
+<pre><code>g meal_prop = meal_pct/100</code></pre>
+<p>This same logic applies to any other mathematicacl operation.</p>
+<div id="binary-riables" class="section level3">
+<h3>Binary riables</h3>
+<p>We frequently need to make binary variables that take the value of 1 if some condition is satisfied and 0 otherwise. Let’s make a binary variable indicating whether <code>meal_pct</code> is below 25.</p>
 <pre><code>g meal_25 = 0
 replace meal_25 = 1 if meal_pct &lt; 25
 </code></pre>
-<p>Equivalently, we can shorten this command to one line by using a boolean argument:</p>
+<p>The <code>if</code> function tells Stata to assign a value of one only to those rows where the condition <code>meal_pct &lt; 25</code> is satisfied. Equivalently, we can shorten this command to one line by using a boolean argument:</p>
 <pre><code>drop meal_25
 g meal_25 = meal_pct &lt; 25</code></pre>
-<p>These argument is evaluated as true or false where rows where the statement <code>meal_pct &lt; 25</code> is true will be assigned a value of 1 and rows where it is false will be assigned a value of 0.</p>
-<p>The <code>if</code> function tells Stata to assign a value of one only to those rows where the condition <code>meal_pct &lt; 25</code> is satisfied. To check if our indicator worked, we can use the <code>summarize</code> command to generate summary statistics of <code>meal_pct</code> for observations where <code>meal_25 == 0</code> and <code>meal_25 == 1</code></p>
+<p>This argument is evaluated as true or false, where rows where the statement <code>meal_pct &lt; 25</code> is true will be assigned a value of 1 and rows where it is false will be assigned a value of 0.</p>
+<p>To check if our indicator worked, we can use the <code>summarize</code> command to generate summary statistics of <code>meal_pct</code> for observations where <code>meal_25 == 0</code> and <code>meal_25 == 1</code></p>
 <pre><code>bysort meal_25: summarize meal_pct
 
 ------------------------------------
@@ -360,13 +408,13 @@ g meal_25 = meal_pct &lt; 25</code></pre>
     Variable |       Obs        Mean    Std. Dev.       Min        Max
 -------------+--------------------------------------------------------
     meal_pct |       113     12.0429      8.0373          0    24.8148</code></pre>
-<p>Preceding the <code>summarize</code> command with <code>bysort meal_25:</code> tells Stata that I want to run the <code>summarize</code> separately for each value of <code>meal_25</code>. Not every command allows the use of <code>bysort</code>; you can check for compatability in the help file for that command.</p>
-<p>Stata can evaluate a full range of logical operators</p>
+<p>Preceding the <code>summarize</code> command with <code>bysort meal_25:</code> tells Stata that I want to run the <code>summarize</code> separately for (1) observations where <code>meal_25</code> == 1 and (2) observations where <code>meal_25</code> == 0. Not every command allows the use of <code>bysort</code>; you can check for compatability in the help file for that command.</p>
+<p>Stata can evaluate a full range of logical operators:</p>
 <table>
 <thead>
 <tr class="header">
 <th>Operator</th>
-<th>Defnition</th>
+<th>Definition</th>
 </tr>
 </thead>
 <tbody>
@@ -396,10 +444,10 @@ g meal_25 = meal_pct &lt; 25</code></pre>
 </tr>
 </tbody>
 </table>
-<p>You can also use the “equal to” operator to evaluate strings. For example, I want to create an indicator for whether the school is located in Sacramento:</p>
+<p>You can also use the “equal to” operator to evaluate strings. For example, if I want to create an indicator for whether the school is located in Sacramento:</p>
 <pre><code>g in_sacramento = county == &quot;Sacramento&quot;
 browse if in_sacramento == 1</code></pre>
-<p>If we want to chain logical operators, we can use <code>&amp;</code> (and) or <code>|</code> (or). For example, if we want to make an indicator for a school being in Sacramento or Los Angeles, we could use the following code:</p>
+<p>Any time you want Stata to evaluate a condition involving text If we want to chain logical operators, we can use <code>&amp;</code> (and) or <code>|</code> (or). For example, if we want to make an indicator for a school being in Sacramento or Los Angeles, we could use the following code:</p>
 <pre><code>g in_sacla = county == &quot;Sacramento&quot; | county == &quot;Los Angeles&quot;
 browse if in_sacla == 1</code></pre>
 </div>
@@ -417,24 +465,667 @@ replace meal_quart = 3 if meal_pct &gt;= 50 &amp; meal_pct &lt; 75
 replace meal_quart = 4 if meal_pct &gt;= 75 
 
 * check to see if we made the variable correctly by looking at mins/maxes for each value of meal_quart:
-bys meal_quart: sum meal_pct</code></pre>
+. bys meal_quart: sum meal_pct
+
+-------------------------------------------------------------------------
+-&gt; meal_quart = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+    meal_pct |       113     12.0429      8.0373          0    24.8148
+
+-------------------------------------------------------------------------
+-&gt; meal_quart = 2
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+    meal_pct |       128    35.92483    7.003632    25.1037    49.5238
+
+--------------------------------------------------------------------------
+-&gt; meal_quart = 3
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+    meal_pct |       106    61.67335     7.23735         50    74.8624
+
+--------------------------------------------------------------------------
+-&gt; meal_quart = 4
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+    meal_pct |        73    86.02189    7.197553    75.5043        100
+
+</code></pre>
 </div>
 </div>
-<div id="basic-analytic-commands" class="section level2">
-<h2>Basic Analytic Commands</h2>
-<div id="statas-display-function" class="section level3">
-<h3>Stata’s <code>display</code> function</h3>
-<p>You can have Stata print out the value of scalars, variables, and expressions using the <code>display</code> function. One application of <code>display</code> is to use Stata as a calculator. Try having Stata evaluate the expression <code>2+2</code> by entering this into either the console or as a line in your .do file.</p>
+</div>
+<div id="analyzing-data-in-stata" class="section level1">
+<h1>Analyzing Data in Stata</h1>
+<div id="statas-display-function" class="section level2">
+<h2>Stata’s <code>display</code> function</h2>
+<p>You can have Stata print out the value of scalars, variables, and expressions using the <code>display</code> command. One application of <code>display</code> is to use Stata as a calculator. Try having Stata evaluate the expression <code>2+2</code> by entering this into either the console or as a line in your .do file.</p>
 <pre><code>. 2+2
 unrecognized command:  2 invalid command name
 r(199);</code></pre>
-<p>Stata can, of course, figure out <code>2+2</code> but is confused because it does not recognize <code>2</code> as a command.</p>
+<p>Stata can, of course, figure out <code>2+2</code> but is confused because it does not recognize <code>2</code> as a command. To get Stata to show the results of this complex expression, we need to use <code>display</code>:</p>
+<pre><code>. display 2+2
+4</code></pre>
 </div>
-<div id="continuous-variables" class="section level3">
-<h3>Continuous Variables</h3>
-<p>We can obtain summary statistics for any variable using the summarize command:</p>
+<div id="continuous-variables" class="section level2">
+<h2>Continuous variables</h2>
+<p>We can obtain summary statistics for any variable using the <code>summarize</code> command.</p>
+<pre><code>. summarize meal_pct
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+    meal_pct |       420    44.70524    27.12338          0        100</code></pre>
+<p><code>summarize</code>, like most commands, has additional options that are not invoked when using only the bare-bones version of the command. One of those options, <code>detail</code>, tells Stata to display additional statistics:</p>
+<pre><code>. sum meal_pct, detail
+
+                          meal_pct
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%      2.23835              0
+10%        9.902              0       Obs                 420
+25%      23.2634              0       Sum of Wgt.         420
+
+50%      41.7507                      Mean           44.70524
+                        Largest       Std. Dev.      27.12338
+75%     66.87865            100
+90%      83.1386            100       Variance       735.6778
+95%      90.4543            100       Skewness       .1839536
+99%          100            100       Kurtosis       2.000198
+
+. </code></pre>
+<p>Options for Stata commands always follow the main command and are preceded by a comma. Each command’s help files, i.e., <code>help summarize</code>, lists all possible options available to users.</p>
+<p>If we want to visualize the <code>meal_pct</code> variable, we can use the <code>histogram</code> command:</p>
+<pre><code>histogram meal_pct</code></pre>
+<p>For bivariate relationships, correlations can be calculated using <code>corr</code>:</p>
+<pre><code>. corr read_scr math_scr
+(obs=420)
+
+             | read_scr math_scr
+-------------+------------------
+    read_scr |   1.0000
+    math_scr |   0.9229   1.0000
+
+
+. </code></pre>
+<p>Or be visualized using the <code>scatter</code> command:</p>
+<pre><code>scatter read_scr math_scr</code></pre>
+<p>Finally, regression results can be obtained by using the <code>reg</code> command:</p>
+<pre><code>
+. reg math_scr meal_pct
+
+      Source |       SS       df       MS              Number of obs =     420
+-------------+------------------------------           F(  1,   418) =  877.53
+       Model |  99821.9852     1  99821.9852           Prob &gt; F      =  0.0000
+    Residual |  47548.7364   418  113.752958           R-squared     =  0.6774
+-------------+----x--------------------------           Adj R-squared =  0.6766
+       Total |  147370.722   419  351.720099           Root MSE      =  10.666
+
+------------------------------------------------------------------------------
+    math_scr |      Coef.   Std. Err.      t    P&gt;|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    meal_pct |  -.5690655   .0192101   -29.62   0.000     -.606826    -.531305
+       _cons |   678.7828   1.004175   675.96   0.000      676.809    680.7567
+------------------------------------------------------------------------------
+
+. 
+. reg math_scr meal_pct str
+
+      Source |       SS       df       MS              Number of obs =     420
+-------------+------------------------------           F(  2,   417) =  452.54
+       Model |  100888.245     2  50444.1224           Prob &gt; F      =  0.0000
+    Residual |  46482.4768   417  111.468769           R-squared     =  0.6846
+-------------+------------------------------           Adj R-squared =  0.6831
+       Total |  147370.722   419  351.720099           Root MSE      =  10.558
+
+------------------------------------------------------------------------------
+    math_scr |      Coef.   Std. Err.      t    P&gt;|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    meal_pct |    -.56104   .0191925   -29.23   0.000    -.5987661   -.5233138
+         str |  -.8510453   .2751679    -3.09   0.002    -1.391934   -.3101562
+       _cons |   695.1389   5.381022   129.18   0.000     684.5616    705.7162
+------------------------------------------------------------------------------
+
+. </code></pre>
+<p>The <code>reg</code> command interprets the first variable listed as the dependent variable and every subsequent variable as an independent variable. More information can be obtained by running <code>help reg</code>.</p>
+</div>
+<div id="categorical-variables-1" class="section level2">
+<h2>Categorical Variables</h2>
+<p>One- or two-way frequency tables can be obtained using the <code>tab</code> command:</p>
+<pre><code>. tab gr_span
+
+    gr_span |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      KK-06 |         61       14.52       14.52
+      KK-08 |        359       85.48      100.00
+------------+-----------------------------------
+      Total |        420      100.00
+      
+. tab in_sacramento gr_span, row
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+in_sacrame |        gr_span
+       nto |     KK-06      KK-08 |     Total
+-----------+----------------------+----------
+         0 |        57        356 |       413 
+           |     13.80      86.20 |    100.00 
+-----------+----------------------+----------
+         1 |         4          3 |         7 
+           |     57.14      42.86 |    100.00 
+-----------+----------------------+----------
+     Total |        61        359 |       420 
+           |     14.52      85.48 |    100.00 
+
+</code></pre>
+</div>
+<div id="storing-and-using-results" class="section level2">
+<h2>Storing and Using Results</h2>
+<p>So far, we’ve learned commands that make Stata display results of an analysis. However, what if we want to use some of these results in subsequent analyses? Virtually all the results that are displayed by Stata can be accessed in some manner. After running a command, we can use <code>return list</code> or <code>ereturn list</code> to reveal which results have been stored and how to access them:</p>
+<pre><code>. sum meal_pct
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+    meal_pct |       420    44.70524    27.12338          0        100
+
+. return list
+
+scalars:
+                  r(N) =  420
+              r(sum_w) =  420
+               r(mean) =  44.70523686533173
+                r(Var) =  735.6778012845001
+                 r(sd) =  27.12338108135673
+                r(min) =  0
+                r(max) =  100
+                r(sum) =  18776.19948343933</code></pre>
+<p>Following the use of the <code>summarize</code> command, Stata stores a number of the results into different <code>r()</code> values. We can call up these results by referring directly to their <code>r()</code> name:</p>
+<pre><code>. display r(mean)
+44.705237
+
+. display r(sum)/r(N)
+44.705237
+
+. display r(mean) + 1
+45.705237</code></pre>
+<p>Something to be mindful of is that <code>r()</code> values will clear whenever you execute another command that uses <code>r()</code> values. Therefore, you need to be careful that the <code>r()</code> value you are calling is actually the one you want. One way to get around this issue is to explicilty store <code>r()</code> values into scalars (or constants) that we define.</p>
+<pre><code>. scalar meal_mean = r(mean)
+
+. display meal_mean
+44.705237
+
+. display meal_mean + 1
+45.705237
+</code></pre>
+<p>If you’ve forgotten what scalars you’ve created, use <code>scalar list _all</code> to have Stata list all scalars you’ve stored in memory.</p>
+<pre><code>. scalar list _all
+ meal_mean =  44.705237
+</code></pre>
+<p>To drop a scalar, run <code>scalar drop [varname]</code> to drop a specific scalar or <code>scalar drop _all</code> to drop all scalars in memory.</p>
+<p>One common research task is standardizing the values of a variable. Using what we’ve learned, we can create a variable called <code>read_z</code> which is the standardized version of the <code>read_scr</code> variable.</p>
+<pre><code>* store means and standard deviations of read_scr
+sum read_scr
+scalar read_mean = r(mean)
+scalar read_sd = r(sd)
+
+* generate read_z
+g read_z = (read_scr - read_mean)/read_sd
+
+
+. sum read_z
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      read_z |       420    1.95e-09           1  -2.509973   2.438312
+
+. </code></pre>
+<p>There are quicker ways to accommplish the same task. The <code>egen</code> (extensions to generate) command contains many helpful functions that simplify common analytic tasks, standardizing variables being one of them:</p>
+<pre><code>egen read_z2 = std(read_scr)
+
+. sum read_z read_z2
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      read_z |       420    1.95e-09           1  -2.509973   2.438312
+     read_z2 |       420    1.95e-09           1  -2.509973   2.438312</code></pre>
+<p>As you can see, both methods produce identical results. Use <code>help egen</code> to see what other functions are available through the <code>egen</code> command.</p>
+<p>Commands that involve estimation procedures, such as <code>regress</code>, store estimates in <code>e()</code>, rather than <code>r()</code>, values. To list these estimates, we need to use <code>ereturn list</code></p>
+<pre><code>. reg math_scr meal_pct str
+
+      Source |       SS       df       MS              Number of obs =     420
+-------------+------------------------------           F(  2,   417) =  452.54
+       Model |  100888.245     2  50444.1224           Prob &gt; F      =  0.0000
+    Residual |  46482.4768   417  111.468769           R-squared     =  0.6846
+-------------+------------------------------           Adj R-squared =  0.6831
+       Total |  147370.722   419  351.720099           Root MSE      =  10.558
+
+------------------------------------------------------------------------------
+    math_scr |      Coef.   Std. Err.      t    P&gt;|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    meal_pct |    -.56104   .0191925   -29.23   0.000    -.5987661   -.5233138
+         str |  -.8510453   .2751679    -3.09   0.002    -1.391934   -.3101562
+       _cons |   695.1389   5.381022   129.18   0.000     684.5616    705.7162
+------------------------------------------------------------------------------
+
+. ereturn list
+
+scalars:
+                  e(N) =  420
+               e(df_m) =  2
+               e(df_r) =  417
+                  e(F) =  452.5404078936591
+                 e(r2) =  .6845881166865957
+               e(rmse) =  10.55787712416729
+                e(mss) =  100888.2447153165
+                e(rss) =  46482.47682687924
+               e(r2_a) =  .6830753498601525
+                 e(ll) =  -1584.335136982862
+               e(ll_0) =  -1826.649081905336
+               e(rank) =  3
+
+macros:
+            e(cmdline) : &quot;regress math_scr meal_pct str&quot;
+              e(title) : &quot;Linear regression&quot;
+          e(marginsok) : &quot;XB default&quot;
+                e(vce) : &quot;ols&quot;
+             e(depvar) : &quot;math_scr&quot;
+                e(cmd) : &quot;regress&quot;
+         e(properties) : &quot;b V&quot;
+            e(predict) : &quot;regres_p&quot;
+              e(model) : &quot;ols&quot;
+          e(estat_cmd) : &quot;regress_estat&quot;
+
+matrices:
+                  e(b) :  1 x 3
+                  e(V) :  3 x 3
+
+functions:
+             e(sample)   </code></pre>
+<p>We might be interested in obtaining the coefficient and standard error of the <code>meal_pct</code> variable. However, these values are not listed under the scalars displayed by <code>ereturn list</code>! Instead, both values are stored away in the matrices labeled <code>e(b)</code> and <code>e(V)</code>. To use these values, we first have to place the information contained in <code>e(b)</code> and <code>e(V)</code> into user-created matrices, similar to how we stored in the results of <code>r(mean)</code> into <code>meal_mean</code> above:</p>
+<pre><code>. matrix betas = e(b)
+
+. matrix list betas
+
+betas[1,3]
+      meal_pct         str       _cons
+y1  -.56103997  -.85104535   695.13894
+
+. display betas[1,1]
+-.56103997
+</code></pre>
+<p>We can see that all of the coefficients estimated above are stored in this matrix called <code>betas</code> and that we can refer to specific values of <code>betas</code> by calling for each element by [rownumber, columnnumber]. Standards errors can be obtained in similar fashion by using information found in <code>e(V)</code>, the variance covariance matrix:</p>
+<pre><code>. matrix vcov = e(V)
+
+. matrix list vcov
+
+symmetric vcov[3,3]
+            meal_pct         str       _cons
+meal_pct   .00036835
+     str  -.00071403    .0757174
+   _cons  -.00244341  -1.4552009     28.9554
+
+. display sqrt(vcov[1,1])
+.01919252
+</code></pre>
+<p>In practice, if you are interested just in handful of coefficients/standard errors and have no need for the full matrix, a shortcut for obtaining these estimates is simply to use the <code>_b[varname]</code> and <code>_se[varname]</code> values that are stored by Stata:</p>
+<pre><code>. display _b[meal_pct]
+-.56103997
+
+. display _se[meal_pct]
+.01919252</code></pre>
 </div>
 </div>
+<div id="macros-and-looping" class="section level1">
+<h1>Macros and Looping</h1>
+<p>So far, we’ve been focusing on methods to analyze and store information by explicitly defining scalars and variables and calling them directly by name. However, there are many instances in which we want to store information only temporarily or have a need to make a “generic” variable that can be applied to multiple times. To accomplish this, we’ll need to use macros.</p>
+<div id="setting-macros" class="section level2">
+<h2>Setting Macros</h2>
+<p>Macros are best thought of as empty boxes that contain any text that you want. There are two types of macros, global and local. Global and local macros can be used largely interchangeably but differ in how they are defined and, most importantly, in how long they are active:</p>
+<pre><code>* global macros are invoked by adding &quot;$&quot; prior to the macro name
+* global macros persist until you close your session of Stata
+. global test1 this is my global macro
+. display &quot;$test1&quot;
+this is my global macro
+
+* local macros are invoked by wrapping `' around the macro name
+* local macros persist until your command is finished executing
+. local test2 this is my local macro
+. display &quot;`test2'&quot;
+this is my local macro</code></pre>
+<p>It is generally recommended that you use local macros whenever possible. The reason for this is because the permanence of the global macro can cause unintended results if you are re-running your program multiple times. Because local macros are forgotten by Stata once your command is finished running, you do not have to worry about errors from past programs coming back to haunt your current anlayses.</p>
+<p>The safety of local macros also make them slightly more annoying to use. Local macros must be defined every single time they are invoked. This means that you must run the <code>local</code> command simultaneously with any command that invokes the local that you’ve created.</p>
+</div>
+<div id="using-macros" class="section level2">
+<h2>Using Macros</h2>
+<p>Careful use of locals help you avoid cluttering your data file (or directory) with intermediate files. Avoiding clutter is good data practice and important for your sanity. But they’re not the most important function of a macro. The true value of macros lay in their ability to be generic placeholders for any text of your choosing.</p>
+<p>For example, imagine you are interested in examining the relationship between a school’s math scores and a host of school characteristics, such as percentage eligible for free and reduced price lunch (<code>meal_pct</code>), student teacher ratio (<code>str</code>), computers per student (<code>comp_stu</code>), and the percentage of English language learners in that class (<code>el_pct</code>). Prior to running a regression, you want to obtain (1) summary statistics for each variable, (2) pairwise correlations for each variable, and finally, (3) a regression of math score on these other variables. We can run each command by writing out this set of variables fully:</p>
+<pre><code>. summarize math_scr meal_pct str comp_stu el_pct
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+    math_scr |       420    653.3426     18.7542      605.4      709.5
+    meal_pct |       420    44.70524    27.12338          0        100
+         str |       420    19.64043    1.891812         14       25.8
+    comp_stu |       420    .1359266    .0649558          0   .4208333
+      el_pct |       420    15.76816    18.28593          0   85.53972
+
+. corr math_scr meal_pct str comp_stu el_pct
+(obs=420)
+
+             | math_scr meal_pct      str comp_stu   el_pct
+-------------+---------------------------------------------
+    math_scr |   1.0000
+    meal_pct |  -0.8230   1.0000
+         str |  -0.1956   0.1352   1.0000
+    comp_stu |   0.2486  -0.2040  -0.3071   1.0000
+      el_pct |  -0.5687   0.6531   0.1876  -0.2510   1.0000
+
+
+. reg math_scr meal_pct str comp_stu el_pct
+
+      Source |       SS       df       MS              Number of obs =     420
+-------------+------------------------------           F(  4,   415) =  229.60
+       Model |  101503.958     4  25375.9895           Prob &gt; F      =  0.0000
+    Residual |  45866.7637   415  110.522322           R-squared     =  0.6888
+-------------+------------------------------           Adj R-squared =  0.6858
+       Total |  147370.722   419  351.720099           Root MSE      =  10.513
+
+------------------------------------------------------------------------------
+    math_scr |      Coef.   Std. Err.      t    P&gt;|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    meal_pct |  -.5405353   .0250411   -21.59   0.000    -.5897584   -.4913122
+         str |  -.6470211   .2873411    -2.25   0.025    -1.211847   -.0821956
+    comp_stu |   17.74383   8.503368     2.09   0.038     1.028788    34.45887
+      el_pct |  -.0312575   .0377237    -0.83   0.408    -.1054108    .0428958
+       _cons |   688.2962   6.118888   112.49   0.000     676.2683     700.324
+------------------------------------------------------------------------------
+
+. </code></pre>
+<p>What if we wanted to remove <code>comp_stu</code> and instead add in <code>expn_stu</code>, a measure of expenditures per student. Changing these variables out requires us to manually edit each command, introducing additional chances for error. Defining a local macro containing all of these variables is a way to get around this issue:</p>
+<pre><code>. local myvariables math_scr meal_pct str  comp_stu el_pct
+
+. summarize `myvariables'
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+    math_scr |       420    653.3426     18.7542      605.4      709.5
+    meal_pct |       420    44.70524    27.12338          0        100
+         str |       420    19.64043    1.891812         14       25.8
+    comp_stu |       420    .1359266    .0649558          0   .4208333
+      el_pct |       420    15.76816    18.28593          0   85.53972
+
+. corr `myvariables'
+(obs=420)
+
+             | math_scr meal_pct      str comp_stu   el_pct
+-------------+---------------------------------------------
+    math_scr |   1.0000
+    meal_pct |  -0.8230   1.0000
+         str |  -0.1956   0.1352   1.0000
+    comp_stu |   0.2486  -0.2040  -0.3071   1.0000
+      el_pct |  -0.5687   0.6531   0.1876  -0.2510   1.0000
+
+
+. reg `myvariables'
+
+      Source |       SS       df       MS              Number of obs =     420
+-------------+------------------------------           F(  4,   415) =  229.60
+       Model |  101503.958     4  25375.9895           Prob &gt; F      =  0.0000
+    Residual |  45866.7637   415  110.522322           R-squared     =  0.6888
+-------------+------------------------------           Adj R-squared =  0.6858
+       Total |  147370.722   419  351.720099           Root MSE      =  10.513
+
+------------------------------------------------------------------------------
+    math_scr |      Coef.   Std. Err.      t    P&gt;|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    meal_pct |  -.5405353   .0250411   -21.59   0.000    -.5897584   -.4913122
+         str |  -.6470211   .2873411    -2.25   0.025    -1.211847   -.0821956
+    comp_stu |   17.74383   8.503368     2.09   0.038     1.028788    34.45887
+      el_pct |  -.0312575   .0377237    -0.83   0.408    -.1054108    .0428958
+       _cons |   688.2962   6.118888   112.49   0.000     676.2683     700.324
+------------------------------------------------------------------------------
+
+. </code></pre>
+<p>I obtain the same results as above, but this time, notice that I am calling for invoking the local `<code>myvariable'</code> in each of the commands instead of the actual variable names. Swapping out <code>comp_stu</code> for <code>expn_stu</code> now involves only changing the definition of the <code>myvariable</code>, leaving all other commands the same:</p>
+<pre><code>. local myvariables math_scr meal_pct str  expn_stu el_pct
+
+. summarize `myvariables'
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+    math_scr |       420    653.3426     18.7542      605.4      709.5
+    meal_pct |       420    44.70524    27.12338          0        100
+         str |       420    19.64043    1.891812         14       25.8
+    expn_stu |       420    5312.408    633.9371    3926.07   7711.507
+      el_pct |       420    15.76816    18.28593          0   85.53972
+
+. corr `myvariables'
+(obs=420)
+
+             | math_scr meal_pct      str expn_stu   el_pct
+-------------+---------------------------------------------
+    math_scr |   1.0000
+    meal_pct |  -0.8230   1.0000
+         str |  -0.1956   0.1352   1.0000
+    expn_stu |   0.1550  -0.0610  -0.6200   1.0000
+      el_pct |  -0.5687   0.6531   0.1876  -0.0714   1.0000
+
+
+. reg `myvariables'
+
+      Source |       SS       df       MS              Number of obs =     420
+-------------+------------------------------           F(  4,   415) =  231.10
+       Model |  101709.286     4  25427.3216           Prob &gt; F      =  0.0000
+    Residual |  45661.4353   415  110.027555           R-squared     =  0.6902
+-------------+------------------------------           Adj R-squared =  0.6872
+       Total |  147370.722   419  351.720099           Root MSE      =  10.489
+
+------------------------------------------------------------------------------
+    math_scr |      Coef.   Std. Err.      t    P&gt;|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    meal_pct |  -.5425712   .0249527   -21.74   0.000    -.5916206   -.4935218
+         str |  -.2676467   .3511815    -0.76   0.446     -.957963    .4226697
+    expn_stu |   .0025781   .0010321     2.50   0.013     .0005494    .0046068
+      el_pct |    -.04609    .037383    -1.23   0.218    -.1195737    .0273937
+       _cons |    669.886   11.13782    60.15   0.000     647.9924    691.7796</code></pre>
+</div>
+<div id="looping" class="section level2">
+<h2>Looping</h2>
+<p>The same “placeholder” logic for macros is at the core of creating loops in your code. Often, we need to perform the same task on several variables. For example, this data set contains three variables that are in percentage (0-100) form: <code>meal_pct</code>, <code>calw_pct</code> and <code>el_pct</code>. If we wanted to generate proportion (0-1) versions of these variables, we could write three separate <code>generate</code> commands:</p>
+<pre><code>gen meal_prop = meal_pct/100
+gen calw_prop = calw_pct/100
+gen el_prop = el_pct/100</code></pre>
+<p>For three variables, this is not too arduous. However, if we needed to do the same for 30 variables, this process would be far more cumbersome. If the variables involved share some common structure, we can employ <code>for</code> loops to do the repetition for us. In the above example, all three variables have unique stems but all end with the same “_pct&quot; suffix. A <code>foreach</code> loop can explot this commonality:</p>
+<pre><code>foreach v in meal calw el {
+  gen `v'_prop = `v'_pct/100
+}</code></pre>
+<p>Looking at the statement within the brackers, <code>gen `v'_prop = `v'_pct/100</code>, notice that <code>v</code> is a local macro (it’s wrapped in the single apostrophes). What <code>v</code> is being replaced with is governed by the statement <code>foreach v in meal calw el</code>. What are the components of this statement?</p>
+<ul>
+<li><code>foreach</code> is the type of looping structure that is being used. There are several kinds of loops, <code>foreach</code> being the most flexible of them.</li>
+<li>This loop will define a macro called <code>v</code>. The choice of <code>v</code> is arbitrary and any letter or string of letters can be used.</li>
+<li>The loop will run for as many times as there are elements in a list that you’ve supplied. In this case, the list that we have supplied contains 3 elements: (1) <code>meal</code>, (2) <code>calw</code>, and (3) <code>el</code>.</li>
+<li>Each time the loop is run, <code>foreach</code> will swap in one element of the list, moving down the list until there are no elements left. This means that the first iteration of the loop will swap in <code>meal</code> for <code>v</code>, the second iteration will swap in <code>calw</code> for <code>v</code>, and so forth.</li>
+</ul>
+<p><code>foreach</code> loops will also accept numbers in its list. This time, I choose the letter <code>i</code> as the name of my local, noting that this decision is of course arbitrary:</p>
+<pre><code>* this is the loop command
+foreach i in 1 2 3 4 5 6 7 8 9 10 {
+  display `i'^2
+}
+
+* this is the output
+. foreach i in 1 2 3 4 5 6 7 8 9 10 {
+  2.   display `i'^2
+  3. }
+1
+4
+9
+16
+25
+36
+49
+64
+81
+100
+. 
+</code></pre>
+<p>With this loop, you can see the sequence through which the <code>foreach</code> loop processes each element of the list more clearly. If you are planning to loop through numbers, the <code>forval</code> loop provides options that might make your life a little easier:</p>
+<pre><code>* this is the command
+forval i = 1/10 {
+  display `i'^2
+}
+* this is the output
+. forval i = 1/10 {
+  2.   display `i'^2
+  3. }
+1
+4
+9
+16
+25
+36
+49
+64
+81
+100
+.</code></pre>
+<p>Instead of having to list out each integer between 1 and 10, <code>forval</code> allows us to simply use <code>i = 1/10</code> to express the same list. The results produced under both <code>foreach</code> and <code>forval</code> are identical.</p>
+<p>You can also use a local that you’ve defined as the list of elements that are passed through the <code>for</code> loop. Returning to our example of the <code>myvariables</code> local:</p>
+<pre><code>local myvariables math_scr meal_pct str expn_stu el_pct
+
+foreach v of local myvariables {
+    summarize `v'
+}
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+    math_scr |       420    653.3426     18.7542      605.4      709.5
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+    meal_pct |       420    44.70524    27.12338          0        100
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+         str |       420    19.64043    1.891812         14       25.8
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+    expn_stu |       420    5312.408    633.9371    3926.07   7711.507
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      el_pct |       420    15.76816    18.28593          0   85.53972</code></pre>
+<p>If you’re keeping score at home, we’ve constructed a loop that fills in the local <code>v</code> with elements from the local <code>myvariables</code>.</p>
+<p>Returning to our standardization example above, we can use the fact that <code>read_scr</code> and <code>math_scr</code> have a similar variable name structure to write a loop that will construct standardized variables for both:</p>
+<pre><code>foreach s in math read {
+    sum `s'_scr
+    scalar `s'_mean = r(mean)
+    scalar `s'_sd = r(sd)
+    g `s'_z = (`s'_scr - `s'_mean)/`s'_sd
+} 
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+    math_scr |       420    653.3426     18.7542      605.4      709.5
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+    read_scr |       420    654.9705    20.10798      604.5        704
+
+. sum math_z read_z
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      math_z |       420    1.48e-09           1  -2.556365   2.994389
+      read_z |       420    1.95e-09           1  -2.509973   2.438312
+
+</code></pre>
+</div>
+</div>
+<div id="making-a-sampling-distribution-with-simulation" class="section level1">
+<h1>Making a Sampling Distribution with Simulation</h1>
+<p>One concept that we are going to continually return to in this course is the sampling distribution. We can use Stata to simulate a sampling distribution by asking it to repeatedly (1) draw random samples from a broader population, (2) estimate the parameter of interest, (3) store this estimate, and (4) compile all of these estimates into one data set.</p>
+<p>Let’s say we are interested in simulate a sampling distribution of the mean and standard deviation of the school-level reading scores by taking 500 random samples of 100 schools from <code>caschool.dta</code>. Using our knowledge of storing summary statistics and looping, we know how to program parts (2) and (3). Let’s combine this with the <code>sample</code> command to take care of (1) and the <code>postfile</code> to do (4). A completed program looks like this:</p>
+<pre><code>tempname testsum
+tempfile samplesum
+postfile `testsum' mean sd using `samplesum', replace 
+
+forval i = 1/500 {
+
+    display &quot;This is iteration `i'&quot;
+    
+    * open data sets
+    use caschool.dta, clear
+    
+    * randomly sample 100 schools
+    sample 100, count
+    
+    * take summary statistics of read_scr but don't show output
+    quietly summarize read_scr
+    
+    post `testsum' (r(mean)) (r(sd))
+    
+}
+
+postclose `testsum'
+</code></pre>
+<p>The command <code>postfile `testsum' mymean mysd using `samplesum', replace</code> defines what we are trying to accomplish:</p>
+<ul>
+<li><code>testsum</code> is the name of the object where Stata will store the mean and standard deviation of reading score from each run of our loop.</li>
+<li>We want two variables, named <code>mymean</code> and <code>mysd</code>, to appear in our final data set.</li>
+<li>We want this final data set to be named <code>samplesum</code>.</li>
+<li>The <code>,replace</code> option tells Stata to overwrite any file already called <code>samplesum</code></li>
+<li>The documentation for postfile (<code>help postfile</code>) recommends that we define a <code>tempname</code> and <code>tempfile</code> and this convention is followed here. These values function just like local macros and disappear once the command is done executing. If you wish to save the final simulated data set, you can remove the single apostrophes around <code>samplesum</code> in the postfile command. Doing so will save a Stata dataset called <code>samplesum.dta</code> in your working directory.</li>
+</ul>
+<p>Our loop, <code>forval i = 1/500 {}</code>, states that we wish to run whatever is inside the brackets 500 times (i.e., a list of all integers from 1 to 500 contains 500 elements). The actual contents of the list are unimportant for this purpose since we don’t actually use the elements of the list in any of our estimations. We just want 500 elements so that the loop will run 500 times.</p>
+<p>The code within the brackets defines what we are doing in each iteration of the loop:</p>
+<ul>
+<li><code>display &quot;This is iteration `i'&quot;</code> is just for visual purposes to know that our loop is progressing as intended.</li>
+<li>Open <code>caschool.dta</code></li>
+<li>Sample 100 schools using <code>sample 100, count</code>. Without the <code>count</code> option, the number after the <code>sample</code> command is read as a percentage. Sampling 100 percent of observations in our data set would be obviously useless.</li>
+<li>Run <code>summarize</code> to store summary statistics for this sample of 100 schools. The <code>quietly</code> in front of <code>summarize</code> just tells Stata to suppress the display of the information on your “Results” panel.</li>
+<li><code>post `testsum' (r(mean)) (r(sd))</code> is the most complicated command. It is responsible for storing whatever values are contained in the sets of parentheses in the temporary object <code>testsum</code>.
+<ul>
+<li>The number parentheses required depends on the number of variables you specified in the your initial <code>postfile</code> command.</li>
+<li>In our case, we have two variables, named <code>mymean</code> and <code>mysd</code>, and therefore, need two sets of parentheses.</li>
+<li>Values in parentheses are assigned to variables according to the order used in the <code>postfile</code> command</li>
+<li>The first parentheses, belonging to <code>mymean</code>, is filled with the value of <code>r(mean)</code>, which is the mean of <code>read_scr</code> in this sample, as calculated by <code>summarize</code>.</li>
+<li>The second parentheses, belonging to <code>mysd</code>, is filled with the value of <code>r(sd)</code>, which is the standard deviation of <code>read_scr</code> in this sample, as calculated by <code>summarize</code></li>
+</ul></li>
+</ul>
+<p>At this point, we’ve completed one iteration of our loop and now return to the top. Once this process is completed 500 times (or however many times we’ve defined in our <code>forval</code> statement), the code exits the loop and proceeds to the <code>postclose</code> command, which tells Stata to take the means and standard deviations from 500 random samples stored in <code>testsum</code> and place these results in our final file <code>samplesum</code>.</p>
+<pre><code>. use `samplesum', clear
+
+. describe
+
+Contains data from /tmp/St28204.000001
+  obs:           500                          
+ vars:             2                          13 Jan 2017 17:21
+ size:         4,000                          
+----------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------
+mymean          float   %9.0g                 
+mysd            float   %9.0g                 
+----------------------------------------------------------------
+Sorted by:  
+
+. sum mymean                              
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      mymean |       500    654.9412    1.800924    649.428    659.946</code></pre>
+<p>This file contains 500 observations (one for each random sample) and two variables, <code>mymean</code> and <code>mysd</code>, which are the sample mean and sample distribution of each random sample, respectively. Under the Central Limit Theorem, the mean of <code>mymean</code> is, on expectation, the mean of <code>read_scr</code> in the full <code>caschool.dta</code> data set and the standard deviation of <code>mymean</code> is an empirically-determined standard error of the mean of <code>read_scr</code>.</p>
 </div>
 
 
