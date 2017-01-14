@@ -325,7 +325,7 @@ r(601);</code></pre>
 </div>
 </div>
 <div id="examining-your-data" class="section level2">
-<h2>Examining your data</h2>
+<h2>Examining your Data</h2>
 <p>You may be curious about what is inside the data set you’ve just loaded. A good first step is the <code>describe</code> command.</p>
 <pre><code>. describe
 
@@ -382,8 +382,8 @@ drop newvar*</code></pre>
 <p>We can generate variables that are modifications of existing variables. For instance, if we wanted to create a variable that transformed the <code>meal_pct</code> variable into a proportion, we would use the following command:</p>
 <pre><code>g meal_prop = meal_pct/100</code></pre>
 <p>This same logic applies to any other mathematicacl operation.</p>
-<div id="binary-riables" class="section level3">
-<h3>Binary riables</h3>
+<div id="binary-variables" class="section level3">
+<h3>Binary Variables</h3>
 <p>We frequently need to make binary variables that take the value of 1 if some condition is satisfied and 0 otherwise. Let’s make a binary variable indicating whether <code>meal_pct</code> is below 25.</p>
 <pre><code>g meal_25 = 0
 replace meal_25 = 1 if meal_pct &lt; 25
